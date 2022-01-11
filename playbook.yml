@@ -71,7 +71,7 @@
     - name: Reload Nginx
       service:
         name: nginx
-        state: reload
+        state: reloaded
 
     - name: Restart Nginx
       service:
