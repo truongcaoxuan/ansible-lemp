@@ -1,1 +1,79 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - vars/default.yml
+  tasks:
+    - name: Update cache and Install LEMP Packages
+      apt: 
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop: [ 'nginx', 'php-fpm', 'php-mysql', 'mysql-server', 'python3-pymysql' ]
 
+# Nginx Configuration
+    - name: Set up Nginx conf file
+      template: 
+        src: "files/nginx.conf.j2"
+        dest: "/etc/nginx/sites-available/{{ http_conf }}"
+
+    - name: Enable new site
+      file:
+        src: "/etc/nginx/sites-available/{{ http_conf }}"
+        dest: "/etc/nginx/sites-enabled/{{ http_conf }}"
+        state: link
+      notify: Reload Nginx
+
+    - name: Removes default site
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: absent
+      notify: Reload Nginx
+
+# MySQL Configuration
+    - name:  Set up the root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    - name: Removes anonymous MySQL user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      no_log: true
+
+    - name: Removes the MySQL test Database
+      mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+# UFW Configuration
+    - name: "UFW - Allow HTTP on port {{ http_port }}"
+      ufw:
+        rule: allow
+        port: "{{ http_port }}"
+        proto: tcp
+
+# Set Up PHP Info Page
+    - name: Set up php info test page
+      template:
+        src: "files/phpinfo.php.j2"
+        dest: "/var/www/html/info.php"
+
+# Create a handler to restart Nginx after the template is applied
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reload
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
