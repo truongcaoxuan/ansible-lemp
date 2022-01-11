@@ -101,12 +101,6 @@
         port: "{{ http_port }}"
         proto: tcp
 
- # Set Up PHP Info Page
-    - name: Set up php info test page
-      template:
-        src: "files/info.php.j2"
-        dest: "/var/www/html/info.php"
-
  # WordPress Configuration
     - name: Download and unpack latest WordPress
       unarchive:
@@ -138,8 +132,14 @@
         src: "files/wp-config.php.j2"
         dest: "/var/www/{{ http_host }}/wordpress/wp-config.php"
       tags: [ wordpress ]
-
-  # Create a handler to restart Nginx after the template is applied
+ 
+ # Set Up PHP Info Page
+    - name: Set up php info test page
+      template:
+        src: "files/info.php.j2"
+        dest: "/var/www/html/{{ http_host }}/wordpress/info.php"
+ 
+ # Create a handler to restart Nginx after the template is applied
   handlers:
     - name: Reload Nginx
       service:
