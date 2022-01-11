@@ -137,7 +137,7 @@
     - name: Set up php info test page
       template:
         src: "files/info.php.j2"
-        dest: "/var/www/html/{{ http_host }}/wordpress/info.php"
+        dest: "/var/www/{{ http_host }}/wordpress/info.php"
  
  # Create a handler to restart Nginx after the template is applied
   handlers:
