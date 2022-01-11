@@ -1,0 +1,12 @@
+lemp:
+  hosts:
+#    lemp1:
+#      ansible_host: 192.168.8.129
+#      ansible_port: 22
+#      ansible_user: truongcx
+#      ansible_sudo_pass: abc.123
+    lemp2:
+      ansible_host: 192.168.8.128
+      ansible_port: 22
+      ansible_user: truongcx
+      ansible_sudo_pass: abc.123
