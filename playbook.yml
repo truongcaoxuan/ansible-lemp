@@ -63,7 +63,7 @@
 # Set Up PHP Info Page
     - name: Set up php info test page
       template:
-        src: "files/phpinfo.php.j2"
+        src: "files/info.php.j2"
         dest: "/var/www/html/info.php"
 
 # Create a handler to restart Nginx after the template is applied
