@@ -1,5 +1,6 @@
 ---
-mysql_root_password: "mysql_root_password"
-http_host: "your_domain"
-http_conf: "your_domain.conf"
-http_port: "80"
+setup_user: "truongcx" # setup user
+http_port: "80" # HTTP port, default is 80.
+http_host: 192.168.8.128 # your domain name. "{{ ansible_facts.eth0.ipv4.address }}"
+http_conf: "your_domain.conf" # the name of the configuration file that will be created within nginx.
+mysql_root_password: "mysql_root_password" # the password for the MySQL root account.
